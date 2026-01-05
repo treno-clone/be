@@ -6,8 +6,8 @@ dotenv.config({
     // encoding: "utf8", 
     // cho phép .env ghi đè biến môi trường có sẵn
     // override: true
-})
+});
 
 export const {
     HOST, PORT, DB_URL, JWT_SECRET, JWT_EXPIRE_IN
-} = process.env
+} = process.env;
