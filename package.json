@@ -1,7 +1,36 @@
 {
-  "dependencies": {
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "mongoose": "^9.1.1"
-  }
+   "name": "pegboard-be",
+   "version": "1.0.0",
+   "description": "be for trello clone",
+   "keywords": [
+      "trello-clone",
+      "be"
+   ],
+   "homepage": "https://github.com/LmNgn/pegboard-be#readme",
+   "bugs": {
+      "url": "https://github.com/LmNgn/pegboard-be/issues"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/LmNgn/pegboard-be.git"
+   },
+   "license": "ISC",
+   "author": "lamnp",
+   "type": "module",
+   "main": "index.js",
+   "scripts": {
+      "dev": "nodemon index.js"
+   },
+   "dependencies": {
+      "bcryptjs": "^3.0.3",
+      "dotenv": "^17.2.3",
+      "express": "^5.2.1",
+      "jsonwebtoken": "^9.0.3",
+      "mongoose": "^9.1.1",
+      "slugify": "^1.6.6",
+      "zod": "^4.3.5"
+   },
+   "devDependencies": {
+      "nodemon": "^3.1.11"
+   }
 }

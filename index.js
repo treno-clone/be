@@ -1,6 +1,6 @@
 import express from "express"
-import connectDB from "./src/config/connectDB"
-import appRoute from "./src/routes"
+import connectDB from "./src/common/config/connectDB.js"
+import appRoute from "./src/router.js"
 //tạo ra 1 server express mang tên app
 const app = express()
 // cho phép nhận vào body dạng JSON, nếu không có thì body dạng JSON sẽ thành undefined

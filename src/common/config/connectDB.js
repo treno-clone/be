@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { DB_URL } from "./dotenvConfig";
+import { DB_URL } from "./dotenvConfig.js";
 
 const connectDB = () => {
     mongoose.connect(DB_URL).then(() => {
