@@ -1,4 +1,4 @@
-import handleError from "./handleError"
+import handleError from "./handleError.js"
 
 const handleAsync = (fn) =>(req, res, next)=>{
     fn(res, req, next).catch((error)=>{

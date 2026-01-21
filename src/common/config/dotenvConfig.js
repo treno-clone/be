@@ -9,5 +9,5 @@ dotenv.config({
 });
 
 export const {
-    HOST, PORT, DB_URL, JWT_SECRET, JWT_EXPIRE_IN
+    HOST, PORT, DB_URL, JWT_SECRET, JWT_EXPIRE_IN, EMAIL_USER, EMAIL_PASSWORD
 } = process.env;
