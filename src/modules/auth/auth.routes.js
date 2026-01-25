@@ -1,13 +1,29 @@
 import { Router } from "express";
-import {   refreshToken, sendForgotPassword, setNewPassword, Signin, Signup } from "./auth.controller.js";
+import {
+  refreshToken,
+  sendForgotPassword,
+  setNewPassword,
+  Signin,
+  Signup,
+} from "./auth.controller.js";
+import checkBodyReq from "../../common/middlewares/checkBodyReq.js";
+import { signinSchema, signupSchema } from "./auth.schema.js";
 const authRoutes = Router();
-authRoutes.post("/signup", Signup);
-authRoutes.post("/signin", Signin);
+authRoutes.post("/signup", checkBodyReq(signupSchema), Signup);
+authRoutes.post("/signin", checkBodyReq(signinSchema), Signin);
 
 //Password
-authRoutes.post("/send-reset-link", sendForgotPassword);
-authRoutes.post("/reset-password", setNewPassword);
+authRoutes.post(
+  "/send-reset-link",
+  checkBodyReq(refreshToken),
+  sendForgotPassword,
+);
+authRoutes.post(
+  "/reset-password",
+  checkBodyReq(setNewPassword),
+  setNewPassword,
+);
 
 //Token
-authRoutes.post("/refresh-token", refreshToken)
+authRoutes.post("/refresh-token", refreshToken);
 export default authRoutes;

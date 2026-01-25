@@ -76,6 +76,7 @@ export const addMember = handleAsync(async (req, res) => {
   const { userId, role } = req.body;
   const workspace = await Workspace.findById(id);
   if (!workspace) return handleError(res, 404, "Workspace không tồn tại");
+  //check quền - TỐI ƯU SAU
   const currentUserId = req.user._id.toString();
   const isOwner = workspace.owner.toString() === currentUserId;
   const isAdmin = workspace.members.some(
