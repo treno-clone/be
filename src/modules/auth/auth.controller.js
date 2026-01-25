@@ -5,10 +5,10 @@ import User from "../user/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../../common/utils/sendMail.js";
-import welcomeTemplate from "../../common/templates/welcome.template";
+import welcomeTemplate from "../../common/templates/welcome.template.js";
+import { JWT_ACCESS, JWT_ACCESS_EXPIRES, JWT_REFRESH, JWT_REFRESH_EXPIRES } from "../../common/config/dotenvConfig.js";
 export const Signup = handleAsync(async (req, res)=>{
     const {username, email, password} = req.body;
-
     const userExist = await User.findOne({email});
     if(userExist) 
         return handleError(res, 400, "Email đã tồn tại !");
@@ -18,7 +18,7 @@ export const Signup = handleAsync(async (req, res)=>{
     const newUser = await User.create({email, password: hashPassword, username});
 
     newUser.password = undefined;
-    await sendMail(userExist.email, "Chào mừng đến với Treno", welcomeTemplate(userExist.email))
+    await sendMail(newUser.email, "Chào mừng đến với Treno", welcomeTemplate(newUser.email, newUser.username));    
     return handleResponse(res, 201, "Đăng ký thành công !", newUser);
 })
 
@@ -52,6 +52,7 @@ export const Signin = handleAsync(async (req, res)=>{
     const accessToken = jwt.sign({_id: userExist._id}, JWT_ACCESS,{
         expiresIn: JWT_ACCESS_EXPIRES
     });
+    console.log("1")
     const refreshToken = jwt.sign({_id: userExist._id}, JWT_REFRESH,{
         expiresIn: JWT_REFRESH_EXPIRES
     });
@@ -69,10 +70,43 @@ export const Signin = handleAsync(async (req, res)=>{
         user: userExist,
         accessToken
     })
+});
+
+
+export const sendForgotPassword = handleAsync(async (req, res)=>{
+    
+});
+
+
+export const setNewPassword = handleAsync(async (req, res)=>{
+    
+});
+
+
+export const refreshToken = handleAsync(async (req, res) =>{
+    const refreshToken = req.cookies.refreshToken;
+    if(!refreshToken)
+        return handleError(res, 401, "Unauthenticated");
+    const payload = jwt.verify(refreshToken, JWT_REFRESH);
+    const existUser = await User.findOne({refreshToken: refreshToken});
+    if(!payload || !existUser) 
+        return handleError(res, 401, "Refresh token invalid");
+
+    const accessToken = jwt.sign({_id: existUser._id}, JWT_ACCESS, {
+        expiresIn: JWT_ACCESS_EXPIRES
+    });
+    const newRefreshToken = jwt.sign({_id: existUser._id}, JWT_REFRESH, {
+        expiresIn: JWT_REFRESH_EXPIRES
+    });
+    existUser.refreshToken = newRefreshToken;
+
+    await existUser.save();
+    res.cookie("refreshToken", newRefreshToken,{
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+    });
+
+    return handleResponse(res, 200, "Refresh token successfully", accessToken);
 })
-export const sendForgotPassword = () =>{}
-
-export const setNewPassword = () =>{}
-
-export const refreshToken = () =>{}
 

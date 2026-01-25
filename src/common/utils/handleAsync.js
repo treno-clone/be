@@ -1,9 +1,10 @@
-import handleError from "./handleError.js"
+import handleError from "./handleError.js";
 
-const handleAsync = (fn) =>(req, res, next)=>{
-    fn(res, req, next).catch((error)=>{
-        handleError(res, 500, "Server error", error)
-    })
+const handleAsync = (fn) => (req, res, next) => {
+  fn(req, res, next).catch((err) => {
+    handleError(res, 500, "Server Error!", err);
+    console.log(err);
+  });
 };
 
 export default handleAsync;
