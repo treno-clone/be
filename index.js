@@ -1,13 +1,15 @@
 import express from "express";
 import connectDB from "./src/common/config/connectDB.js";
 import appRoute from "./src/router.js";
-import { PORT, URL } from "./src/common/config/dotenvConfig.js";
+import { PORT, URL, FE_URL } from "./src/common/config/dotenvConfig.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 //tạo ra 1 server express mang tên app
 const app = express();
-
+app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000", // FE domain
+    origin: `${FE_URL}`, // FE domain
     credentials: true, // Cho phép gửi cookie, header Authorization
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Các method cho phép
     allowedHeaders: ["Content-Type", "Authorization"], // Các header cho phép

@@ -21,6 +21,7 @@ const workspaceSchema = new Schema(
         },
       },
     ],
+    boards: [{ type: Schema.Types.ObjectId, ref: "Board" }],
     visibility: {
       type: String,
       enum: ["private", "public"],

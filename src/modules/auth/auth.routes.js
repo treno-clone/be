@@ -7,7 +7,12 @@ import {
   Signup,
 } from "./auth.controller.js";
 import checkBodyReq from "../../common/middlewares/checkBodyReq.js";
-import { signinSchema, signupSchema } from "./auth.schema.js";
+import {
+  sendResetLinkSchema,
+  setNewPasswordSchema,
+  signinSchema,
+  signupSchema,
+} from "./auth.schema.js";
 const authRoutes = Router();
 authRoutes.post("/signup", checkBodyReq(signupSchema), Signup);
 authRoutes.post("/signin", checkBodyReq(signinSchema), Signin);
@@ -15,14 +20,10 @@ authRoutes.post("/signin", checkBodyReq(signinSchema), Signin);
 //Password
 authRoutes.post(
   "/send-reset-link",
-  checkBodyReq(refreshToken),
+  checkBodyReq(sendResetLinkSchema),
   sendForgotPassword,
 );
-authRoutes.post(
-  "/reset-password",
-  checkBodyReq(setNewPassword),
-  setNewPassword,
-);
+authRoutes.post("/reset-password", checkBodyReq(setNewPasswordSchema), setNewPassword);
 
 //Token
 authRoutes.post("/refresh-token", refreshToken);

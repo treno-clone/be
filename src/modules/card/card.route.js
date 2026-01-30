@@ -3,7 +3,9 @@ import {
   getCards,
   getCardById,
   updateCard,
-  deleteCard,
+  hardDeleteCard,
+  softDeleteCard,
+  getCardsByList,
 } from "./card.controller.js";
 import checkAuth from "../../common/middlewares/checkAuth.js";
 import { cardSchema } from "./card.schema.js";
@@ -13,10 +15,13 @@ const cardRoutes = Router();
 
 cardRoutes.use(checkAuth);
 
-cardRoutes.post("/", checkBodyReq(cardSchema), createCard);
 cardRoutes.get("/", getCards);
+cardRoutes.get("/list/:listId", getCardsByList);
 cardRoutes.get("/:id", getCardById);
-cardRoutes.put("/:id",checkBodyReq(cardSchema), updateCard);
-cardRoutes.delete("/:id", deleteCard);
 
+cardRoutes.post("/", checkBodyReq(cardSchema), createCard);
+cardRoutes.put("/:id",checkBodyReq(cardSchema), updateCard);
+
+cardRoutes.patch("/:id/archive", softDeleteCard); 
+cardRoutes.delete("/:id", hardDeleteCard);   
 export default cardRoutes;

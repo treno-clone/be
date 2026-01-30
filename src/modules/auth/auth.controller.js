@@ -1,7 +1,7 @@
 import handleAsync from "../../common/utils/handleAsync.js";
 import handleError from "../../common/utils/handleError.js";
 import handleResponse from "../../common/utils/handleResponse.js";
-import User from "../user/User.js";
+import User from "../user/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../../common/utils/sendMail.js";
@@ -17,6 +17,7 @@ import {
 import sendResetCodeTemplate from "../../common/templates/sendResetCode.template.js";
 export const Signup = handleAsync(async (req, res) => {
   const { username, email, password } = req.body;
+  console.log(req.body);
   const userExist = await User.findOne({ email });
   if (userExist) return handleError(res, 400, "Email đã tồn tại !");
 
@@ -40,6 +41,7 @@ export const Signup = handleAsync(async (req, res) => {
 export const Signin = handleAsync(async (req, res) => {
   const { email, password } = req.body;
   const userExist = await User.findOne({ email });
+  console.log(userExist);
   if (userExist?.accountLockUntil && userExist?.accountLockUntil > Date.now()) {
     const timeLeft = Math.ceil(
       (userExist.accountLockUntil - Date.now()) / 60000,
@@ -73,17 +75,18 @@ export const Signin = handleAsync(async (req, res) => {
   const accessToken = jwt.sign({ _id: userExist._id }, JWT_ACCESS, {
     expiresIn: JWT_ACCESS_EXPIRES,
   });
-  console.log("1");
   const refreshToken = jwt.sign({ _id: userExist._id }, JWT_REFRESH, {
     expiresIn: JWT_REFRESH_EXPIRES,
   });
-  res.cookie("refreshToken", refreshToken, {
+  await res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: false,
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
   });
-
+  //lưu token vào db
+  userExist.refreshToken = refreshToken;
+  await userExist.save();
   userExist.password = undefined;
   userExist.refreshToken = undefined;
 
@@ -96,24 +99,29 @@ export const Signin = handleAsync(async (req, res) => {
 export const sendForgotPassword = handleAsync(async (req, res) => {
   console.log("object");
   const { email } = req.body;
+  console.log(email);
   const userExist = await User.findOne({ email });
   if (!userExist) return handleError(res, 404, "Email không tồn tại.");
   const resetToken = jwt.sign({ _id: userExist._id }, JWT_RESET_SECRET, {
     expiresIn: JWT_RESET_SECRET_EXPIRES,
   });
+  userExist.resetToken = resetToken;
+  await userExist.save();
   await sendMail(email, "Đặt lại mật khẩu", sendResetCodeTemplate(resetToken));
   return handleResponse(res, 200, "Link sent");
 });
 
 export const setNewPassword = handleAsync(async (req, res) => {
-  const { token, newPassword } = req.body;
-  if (!token || !newPassword) return handleError(res, 400, "Thiếu dữ liệu.");
+  const { resetToken, newPassword } = req.body;
+  if (!resetToken || !newPassword)
+    return handleError(res, 400, "Thiếu dữ liệu.");
   try {
-    const payload = jwt.verify(token, JWT_RESET_SECRET);
+    const payload = jwt.verify(resetToken, JWT_RESET_SECRET);
     const userExist = await User.findById(payload._id);
     if (!userExist) return handleError(res, 404, "Người dùng không tồn tại.");
     const hashPassword = bcrypt.hashSync(newPassword, 10);
     userExist.password = hashPassword;
+    userExist.resetToken = null;
     await userExist.save();
     return handleResponse(res, 200, "Đặt lại mật khẩu thành công.");
   } catch (error) {

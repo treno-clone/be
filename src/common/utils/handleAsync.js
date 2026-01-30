@@ -6,5 +6,4 @@ const handleAsync = (fn) => (req, res, next) => {
     console.log(err);
   });
 };
-
 export default handleAsync;

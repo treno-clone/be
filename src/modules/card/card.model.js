@@ -1,29 +1,43 @@
 import mongoose, { Schema } from "mongoose";
 
-const cardSchema = new Schema ({
-    title :{
-        type: String,
-        required: true,
+const cardSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true
     },
-    description: String,
-    background_color: {
+    description: {
         type: String,
-        required: true,
-        default: '#808080'
+        default: ""
+    },
+    background_color: {
+      type: String,
+      required: true,
+      default: "#808080",
     },
     position: {
-        type: Number,
+      type: Number,
+      required: true,
     },
     dueDate: Date,
-    labels: [ { type: Schema.Types.ObjectId, ref: "Label" } ],
+    labels: [{ type: Schema.Types.ObjectId, ref: "Label" }],
     assignees: [{ type: Schema.Types.ObjectId, ref: "User" }],
     subtasks: [{ type: Schema.Types.ObjectId, ref: "Subtask" }],
     isArchive: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
+      index: true
     },
-
-},{ timestamps: true, versionKey: false });
+    listId: {
+      type: Schema.Types.ObjectId,
+      ref: "List",
+      required: true,
+      index: true,
+    },
+  },
+  { timestamps: true, versionKey: false },
+);
 
 const Card = mongoose.model("Card", cardSchema);
 export default Card;

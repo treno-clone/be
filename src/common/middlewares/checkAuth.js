@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { JWT_ACCESS } from "../config/dotenvConfig.js";
-import User from "../../modules/user/User.js";
+import User from "../../modules/user/user.model.js";
 import handleError from "../utils/handleError.js";
 
 const checkAuth = async (req, res, next) => {

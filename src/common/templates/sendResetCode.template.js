@@ -1,5 +1,7 @@
+import { FE_URL } from "../config/dotenvConfig.js";
 const sendResetCodeTemplate = (token) => {
-  const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+  const resetLink = `${FE_URL}/reset-password/${token}`;
+  console.log(resetLink);
   return `
     <div style="font-family: Arial, sans-serif; line-height: 1.6;">
       <h2>Yêu cầu đặt lại mật khẩu</h2>

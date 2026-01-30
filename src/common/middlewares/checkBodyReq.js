@@ -13,6 +13,7 @@ const checkBodyReq = (schema) => async (req, res, next) => {
         path: item.path.join("."),
         message: item.message,
       }));
+      console.log(error)
       return handleError(res, 400, "Bad request", errors);
     }
     return handleError(res, 500, "Internal server error", error);

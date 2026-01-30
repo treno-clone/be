@@ -1,7 +1,7 @@
 import handleAsync from "../../common/utils/handleAsync.js";
 import handleError from "../../common/utils/handleError.js";
 import handleResponse from "../../common/utils/handleResponse.js";
-import Workspace from "./Workspace.js";
+import Workspace from "./workspace.model.js";
 
 // Tạo workspace mới
 export const createWorkspace = handleAsync(async (req, res) => {
@@ -26,7 +26,8 @@ export const getMyWorkspaces = handleAsync(async (req, res) => {
     $or: [{ owner: userId }, { "members.user": userId }],
   })
     .populate("owner", "username email")
-    .populate("members.user", "username email");
+    .populate("members.user", "username email")
+    .populate("boards", "title background");
 
   return handleResponse(res, 200, "Danh sách workspace", workspaces);
 });
