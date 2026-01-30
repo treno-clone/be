@@ -1,4 +1,3 @@
-import express from "express";
 import {
   createBoard,
   getBoardsByWorkspace,
@@ -8,18 +7,18 @@ import {
   deleteBoard
 } from "./board.controller.js";
 import checkAuth from "../../common/middlewares/checkAuth.js";
+import { Router } from "express";
+const boardRoutes = Router();
 
-const boarRoutes = express.Router();
+boardRoutes.use(checkAuth);
 
-boarRoutes.use(checkAuth);
+boardRoutes.get("/workspace/:workspaceId", getBoardsByWorkspace);
+boardRoutes.get("/:id", getBoardById);
 
-boarRoutes.get("/workspace/:workspaceId", getBoardsByWorkspace);
-boarRoutes.get("/:id", getBoardById);
+boardRoutes.post("/", createBoard);
+boardRoutes.put("/:id", updateBoard);
 
-boarRoutes.post("/", createBoard);
-boarRoutes.put("/:id", updateBoard);
+boardRoutes.patch("/:id/archive", archiveBoard);
+boardRoutes.delete("/:id", deleteBoard);
 
-boarRoutes.patch("/:id/archive", archiveBoard);
-boarRoutes.delete("/:id", deleteBoard);
-
-export default boarRoutes;
+export default boardRoutes;

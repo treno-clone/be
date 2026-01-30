@@ -1,21 +1,25 @@
 import { Router } from "express";
 import {
+  getAllListsWithCards,
+  getListsByBoard,
   createList,
-  getListsWithCards,
-  getListById,
   updateList,
-  deleteList,
+  softDeleteList,
+  hardDeleteList,
 } from "./list.controller.js";
 import checkAuth from "../../common/middlewares/checkAuth.js";
 
-const listRoutes = Router();
+const router = Router();
 
-listRoutes.use(checkAuth);
+router.use(checkAuth);
 
-listRoutes.post("/", createList);
-listRoutes.get("/board/:boardId", getListsWithCards);
-listRoutes.get("/:id", getListById);
-listRoutes.put("/:id", updateList);
-listRoutes.delete("/:id", deleteList);
+router.get("/", getAllListsWithCards);
+router.get("/board/:boardId", getListsByBoard);
 
-export default listRoutes;
+router.post("/", createList);
+router.put("/:id", updateList);
+
+router.patch("/:id/soft-delete", softDeleteList);
+router.delete("/:id", hardDeleteList);
+
+export default router;

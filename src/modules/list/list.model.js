@@ -18,12 +18,12 @@ const listSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    board: {
+    boardId: {
       type: Schema.Types.ObjectId,
       ref: "Board",
       required: true,
     },
-    card: [
+    cards: [
       {
         type: Schema.Types.ObjectId,
         ref: "Card",
